@@ -1,15 +1,24 @@
 #include <stdio.h>
+#include <stdint.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 
 typedef struct {
     SDL_Renderer *renderer;
     SDL_Window *window;
-    SDL_Event event;
-    bool running;
-} App;
+} Sdl_window;
 
-bool sdl_init(App *app){
+typedef enum {
+    RUNNING,
+    PAUSED,
+    QUIT
+} state_t;
+
+typedef struct {
+    state_t state;
+} Chip8;
+
+bool sdl_init(Sdl_window *sdl_window){
 
     //initialize SDL components, if anything fails return false
 
@@ -18,14 +27,14 @@ bool sdl_init(App *app){
         return false;
     }
 
-    app->window = SDL_CreateWindow("CHIP8", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 320, 0);
-    if(app->window == NULL) {
+    sdl_window->window = SDL_CreateWindow("CHIP8", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 320, 0);
+    if(sdl_window->window == NULL) {
         SDL_Log("Could not create window! %s\n", SDL_GetError());
         return false;
     }
 
-    app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_ACCELERATED);
-    if(app->renderer == NULL) {
+    sdl_window->renderer = SDL_CreateRenderer(sdl_window->window, -1, SDL_RENDERER_ACCELERATED);
+    if(sdl_window->renderer == NULL) {
         SDL_Log("Failed to create renderer! %s\n", SDL_GetError());
         return false;
     }
@@ -35,25 +44,27 @@ bool sdl_init(App *app){
     return true;
 }
 
-void sdl_stop(App *app){
-    SDL_DestroyRenderer(app->renderer);
-    SDL_DestroyWindow(app->window);
+void sdl_stop(Sdl_window *sdl_window){
+    SDL_DestroyRenderer(sdl_window->renderer);
+    SDL_DestroyWindow(sdl_window->window);
     SDL_Quit();
 }
 
-void inputHandler(App *app){
+void inputHandler(Chip8 *chip8){
     SDL_Event event;
     while(SDL_PollEvent(&event)){
         switch(event.type){
             case SDL_QUIT:
-                app->running = false;
+                chip8->state = QUIT;
                 break;
             case SDL_KEYDOWN:
                 switch(event.key.keysym.scancode){
-                    //when escape is pressed, set app state to stop
+                    //when escape is pressed, set sdl_window state to stop
                     case SDL_SCANCODE_ESCAPE:
-                        app->running = false;
+                        chip8->state = QUIT;
                         break;
+
+                    //CHIP 8 key mappings
                     case SDL_SCANCODE_1:
                         //CHIP 8 key 1
                         printf("1\n");
@@ -118,6 +129,7 @@ void inputHandler(App *app){
                         //CHIP 8 key F
                         printf("F\n");
                         break;
+
                     default:
                         break;
                 }
@@ -127,24 +139,27 @@ void inputHandler(App *app){
 
 int main(int argc, char *argv[]){
 
-    //initialize app
-    App app = {0};
+    //initialize sdl_window
+    Sdl_window sdl_window = {0};
+
+    //initialize chip8
+    Chip8 chip8 = {0};
 
     //if sdl initialization returns falsy exit with failure
-    if(!sdl_init(&app)){
+    if(!sdl_init(&sdl_window)){
         exit(EXIT_FAILURE);
     }
 
-    app.running = true; //set app state to run
+    chip8.state = RUNNING;
 
-    while(app.running){
-        inputHandler(&app);
+    while(chip8.state != QUIT){
+        inputHandler(&chip8);
         
         SDL_Delay(16); //delay for ~60hz/60fps
     }
 
     printf("terve vaan\n");
 
-    sdl_stop(&app);
+    sdl_stop(&sdl_window);
     return 0;
 }
