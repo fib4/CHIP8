@@ -5,6 +5,8 @@
 typedef struct {
     SDL_Renderer *renderer;
     SDL_Window *window;
+    SDL_Event event;
+    bool running;
 } App;
 
 bool sdl_init(App *app){
@@ -39,6 +41,25 @@ void sdl_stop(App *app){
     SDL_Quit();
 }
 
+void inputHandler(App *app){
+    SDL_Event event;
+    while(SDL_PollEvent(&event)){
+        switch(event.type){
+            case SDL_QUIT:
+                app->running = false;
+                break;
+            case SDL_KEYDOWN:
+                switch(event.key.keysym.scancode){
+                    case SDL_SCANCODE_ESCAPE:
+                        app->running = false;
+                        break;
+                    default:
+                        break;
+                }
+        }
+    }
+}
+
 int main(int argc, char *argv[]){
 
     //initialize app
@@ -49,7 +70,13 @@ int main(int argc, char *argv[]){
     exit(EXIT_FAILURE);
     }
 
-    SDL_Delay(3000);
+    app.running = true;
+
+    while(app.running){
+        inputHandler(&app);
+        
+        SDL_Delay(16);
+    }
 
     printf("terve vaan\n");
 
