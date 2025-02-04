@@ -50,8 +50,73 @@ void inputHandler(App *app){
                 break;
             case SDL_KEYDOWN:
                 switch(event.key.keysym.scancode){
+                    //when escape is pressed, set app state to stop
                     case SDL_SCANCODE_ESCAPE:
                         app->running = false;
+                        break;
+                    case SDL_SCANCODE_1:
+                        //CHIP 8 key 1
+                        printf("1\n");
+                        break;
+                    case SDL_SCANCODE_2:
+                        //CHIP 8 key 2
+                        printf("2\n");
+                        break;
+                    case SDL_SCANCODE_3:
+                        //CHIP 8 key 3
+                        printf("3\n");
+                        break;
+                    case SDL_SCANCODE_4:
+                        //CHIP 8 key C
+                        printf("C\n");
+                        break;
+                    case SDL_SCANCODE_Q:
+                        //CHIP 8 key 4
+                        printf("4\n");
+                        break;
+                    case SDL_SCANCODE_W:
+                        //CHIP 8 key 5
+                        printf("5\n");
+                        break;
+                    case SDL_SCANCODE_E:
+                        //CHIP 8 key 6
+                        printf("6\n");
+                        break;
+                    case SDL_SCANCODE_R:
+                        //CHIP 8 key D
+                        printf("D\n");
+                        break;
+                    case SDL_SCANCODE_A:
+                        //CHIP 8 key 7
+                        printf("7\n");
+                        break;
+                    case SDL_SCANCODE_S:
+                        //CHIP 8 key 8
+                        printf("8\n");
+                        break;
+                    case SDL_SCANCODE_D:
+                        //CHIP 8 key 9
+                        printf("9\n");
+                        break;
+                    case SDL_SCANCODE_F:    
+                        //CHIP 8 key E
+                        printf("E\n");
+                        break;
+                    case SDL_SCANCODE_Z:
+                        //CHIP 8 key A
+                        printf("A\n");
+                        break;
+                    case SDL_SCANCODE_X:
+                        //CHIP 8 key 0
+                        printf("0\n");
+                        break;
+                    case SDL_SCANCODE_C:
+                        //CHIP 8 key B
+                        printf("B\n");
+                        break;
+                    case SDL_SCANCODE_V:
+                        //CHIP 8 key F
+                        printf("F\n");
                         break;
                     default:
                         break;
@@ -67,15 +132,15 @@ int main(int argc, char *argv[]){
 
     //if sdl initialization returns falsy exit with failure
     if(!sdl_init(&app)){
-    exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
 
-    app.running = true;
+    app.running = true; //set app state to run
 
     while(app.running){
         inputHandler(&app);
         
-        SDL_Delay(16);
+        SDL_Delay(16); //delay for ~60hz/60fps
     }
 
     printf("terve vaan\n");
