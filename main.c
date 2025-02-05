@@ -130,6 +130,9 @@ void inputHandler(struct chip8 *chip8){
 
 int main(int argc, char *argv[]){
 
+    (void)argc;
+    (void)argv;
+
     //initialize sdl_window
     Sdl_window sdl_window = {0};
 
