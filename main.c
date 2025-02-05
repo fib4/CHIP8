@@ -2,44 +2,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
+
 #include "chip8.h"
-
-typedef struct {
-    SDL_Renderer *renderer;
-    SDL_Window *window;
-} Sdl_window;
-
-bool sdl_init(Sdl_window *sdl_window){
-
-    //initialize SDL components, if anything fails return false
-
-    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
-        SDL_Log("Failed to initialize SDL! %s\n", SDL_GetError());
-        return false;
-    }
-
-    sdl_window->window = SDL_CreateWindow("CHIP8", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 320, 0);
-    if(sdl_window->window == NULL) {
-        SDL_Log("Could not create window! %s\n", SDL_GetError());
-        return false;
-    }
-
-    sdl_window->renderer = SDL_CreateRenderer(sdl_window->window, -1, SDL_RENDERER_ACCELERATED);
-    if(sdl_window->renderer == NULL) {
-        SDL_Log("Failed to create renderer! %s\n", SDL_GetError());
-        return false;
-    }
-
-    //everything works so return true;
-
-    return true;
-}
-
-void sdl_stop(Sdl_window *sdl_window){
-    SDL_DestroyRenderer(sdl_window->renderer);
-    SDL_DestroyWindow(sdl_window->window);
-    SDL_Quit();
-}
+#include "graphics.h"
 
 void inputHandler(struct chip8 *chip8){
     SDL_Event event;
@@ -132,13 +97,13 @@ int main(int argc, char *argv[]){
 
 
     //initialize sdl_window
-    Sdl_window sdl_window = {0};
+    struct graphics graphics = {0};
 
     //initialize chip8
     struct chip8 chip8 = {0};
 
     //if sdl initialization returns falsy exit with failure
-    if(!sdl_init(&sdl_window)){
+    if(!graphics_sdl_init(&graphics)){
         exit(EXIT_FAILURE);
     }
 
@@ -163,6 +128,6 @@ int main(int argc, char *argv[]){
 
     printf("terve vaan\n");
 
-    sdl_stop(&sdl_window);
+    graphics_sdl_stop(&graphics);
     return 0;
 }

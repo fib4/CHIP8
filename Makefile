@@ -10,7 +10,7 @@ SDL2_LDFLAGS = $(shell sdl2-config --libs) # Linker flags for SDL2
 BUILD_DIR = build
 BIN = main
 
-SRCS = main.c chip8.c
+SRCS = main.c chip8.c graphics.c
 OBJS = $(SRCS:/%.c=$(BUILD_DIR)/%.o)
 
 $(BIN): $(OBJS)
