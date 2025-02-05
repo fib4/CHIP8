@@ -130,8 +130,6 @@ void inputHandler(struct chip8 *chip8){
 
 int main(int argc, char *argv[]){
 
-    (void)argc;
-    (void)argv;
 
     //initialize sdl_window
     Sdl_window sdl_window = {0};
@@ -143,6 +141,15 @@ int main(int argc, char *argv[]){
     if(!sdl_init(&sdl_window)){
         exit(EXIT_FAILURE);
     }
+
+
+    //only one argument allowed
+    if(argc > 2){
+        exit(EXIT_FAILURE);
+    }
+
+    //load rom from path given in argument
+    chip8_load_rom(&chip8, argv[1]);
 
     chip8.state = RUNNING;
 
