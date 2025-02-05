@@ -10,7 +10,7 @@ enum state {
 };
 
 struct chip8 {
-    uint8_t V[16]; //16 8-bit registers
+    uint8_t v[16]; //16 8-bit registers
     uint8_t memory[4096]; //4KB memory
     bool display[64*32]; //display pixels on/off
     uint16_t pc; //16-bit program counter
@@ -23,3 +23,4 @@ struct chip8 {
 
 void chip8_load_rom(struct chip8 *chip8, const char *filename); //function to load rom file into memory
 
+void chip8_execute(struct chip8 *chip8);

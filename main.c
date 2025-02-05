@@ -154,6 +154,8 @@ int main(int argc, char *argv[]){
     chip8.state = RUNNING;
 
     while(chip8.state != STOPPED){
+
+        chip8_execute(&chip8);
         inputHandler(&chip8);
         
         SDL_Delay(16); //delay for ~60hz/60fps
