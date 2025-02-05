@@ -2,21 +2,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
+#include "chip8.h"
 
 typedef struct {
     SDL_Renderer *renderer;
     SDL_Window *window;
 } Sdl_window;
-
-typedef enum {
-    RUNNING,
-    PAUSED,
-    QUIT
-} state_t;
-
-typedef struct {
-    state_t state;
-} Chip8;
 
 bool sdl_init(Sdl_window *sdl_window){
 
@@ -50,18 +41,18 @@ void sdl_stop(Sdl_window *sdl_window){
     SDL_Quit();
 }
 
-void inputHandler(Chip8 *chip8){
+void inputHandler(struct chip8 *chip8){
     SDL_Event event;
     while(SDL_PollEvent(&event)){
         switch(event.type){
             case SDL_QUIT:
-                chip8->state = QUIT;
+                chip8->state = STOPPED;
                 break;
             case SDL_KEYDOWN:
                 switch(event.key.keysym.scancode){
                     //when escape is pressed, set sdl_window state to stop
                     case SDL_SCANCODE_ESCAPE:
-                        chip8->state = QUIT;
+                        chip8->state = STOPPED;
                         break;
 
                     //CHIP 8 key mappings
@@ -143,7 +134,7 @@ int main(int argc, char *argv[]){
     Sdl_window sdl_window = {0};
 
     //initialize chip8
-    Chip8 chip8 = {0};
+    struct chip8 chip8 = {0};
 
     //if sdl initialization returns falsy exit with failure
     if(!sdl_init(&sdl_window)){
@@ -152,7 +143,7 @@ int main(int argc, char *argv[]){
 
     chip8.state = RUNNING;
 
-    while(chip8.state != QUIT){
+    while(chip8.state != STOPPED){
         inputHandler(&chip8);
         
         SDL_Delay(16); //delay for ~60hz/60fps
