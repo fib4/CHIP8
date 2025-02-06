@@ -26,6 +26,27 @@ bool graphics_sdl_init(struct graphics *graphics){
     return true;
 }
 
+void graphics_draw_graphics(struct graphics * graphics, struct chip8 * chip8){
+    SDL_Rect pixel = {0,0,10,10};
+
+    for(int i = 0; i < 32; ++i){
+        for(int j = 0; j < 64; ++j){
+            pixel.x = j * 10;
+            pixel.y = i * 10;
+
+            if(chip8->display[i][j]){
+                SDL_SetRenderDrawColor(graphics->renderer, 255, 255, 255, 255);
+                SDL_RenderFillRect(graphics->renderer, &pixel);
+            } else{
+                SDL_SetRenderDrawColor(graphics->renderer, 0, 0, 0, 255);
+                SDL_RenderFillRect(graphics->renderer, &pixel);
+            };
+        }
+    }
+
+    SDL_RenderPresent(graphics->renderer);
+}
+
 void graphics_clear_screen(struct graphics *graphics){
     SDL_SetRenderDrawColor(graphics->renderer, 0, 0, 0, 255);
     SDL_RenderClear(graphics->renderer);

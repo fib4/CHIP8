@@ -120,6 +120,14 @@ int main(int argc, char *argv[]){
 
     while(chip8.state != STOPPED){
 
+        if(chip8.state == CLEAR){
+            graphics_clear_screen(&graphics);
+        }
+
+        if(chip8.state == DRAW){
+            graphics_draw_graphics(&graphics, &chip8);
+        }
+
         chip8_execute(&chip8);
         inputHandler(&chip8);
         
