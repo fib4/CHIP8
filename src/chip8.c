@@ -103,7 +103,7 @@ void chip8_diplay_framebuffer(struct chip8 * chip8, uint8_t x, uint8_t y, uint16
                     chip8->v[0xF] = 1;
                 }
                 //flip the value of pixel
-                chip8->display[y + i][x + j] = !chip8->display[y + 1][x + j];
+                chip8->display[y + i][x + j] = !chip8->display[y + i][x + j];
             }
         }
     }
