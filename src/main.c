@@ -100,7 +100,8 @@ int main(int argc, char *argv[]){
     struct graphics graphics = {0};
 
     //initialize chip8
-    struct chip8 chip8 = {0};
+    struct chip8 chip8;
+    chip8_init(&chip8);
 
     //if sdl initialization returns falsy exit with failure
     if(!graphics_sdl_init(&graphics)){

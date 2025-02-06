@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
 
 enum state {
     RUNNING,
@@ -22,6 +23,8 @@ struct chip8 {
 
     enum state state;
 };
+
+void chip8_init(struct chip8 *chip8);
 
 void chip8_load_rom(struct chip8 *chip8, const char *filename); //function to load rom file into memory
 
