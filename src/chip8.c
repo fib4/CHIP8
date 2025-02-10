@@ -69,6 +69,7 @@ void chip8_execute(struct chip8 *chip8){
         case 0x0:
             switch(nn) {
                 case 0xe0:
+                    memset(chip8->display, 0, sizeof(chip8->display));
                     chip8->state = CLEAR;
             }
             break;
