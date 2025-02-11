@@ -125,8 +125,9 @@ void chip8_execute(struct chip8 *chip8){
                     chip8->v[0xF] = sum > 0xFF;
                     break;
                 case 0x5: //SUB Vx, Vy
-                    chip8->v[0xF] = chip8->v[x] > chip8->v[y];
+                    uint8_t flag = chip8->v[x] >= chip8->v[y];
                     chip8->v[x] = chip8->v[x] - chip8->v[y];
+                    chip8->v[0xF] = flag;
                     break;
                 case 0x6: //SHR Vx {, Vy}
                     //TODO handle both original and 90s-> implementations?
