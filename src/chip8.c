@@ -121,8 +121,8 @@ void chip8_execute(struct chip8 *chip8){
                     break;
                 case 0x4: //ADD Vx, Vy
                     uint16_t sum = chip8->v[x] + chip8->v[y];
-                    chip8->v[0xF] = sum > 0xFF;
                     chip8->v[x] = sum & 0xFF;
+                    chip8->v[0xF] = sum > 0xFF;
                     break;
                 case 0x5: //SUB Vx, Vy
                     chip8->v[0xF] = chip8->v[x] > chip8->v[y];
