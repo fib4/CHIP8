@@ -65,6 +65,7 @@ void chip8_execute(struct chip8 *chip8){
     uint16_t n = opcode & 0x000f;
     uint16_t nn = opcode & 0x00ff;
     uint16_t nnn = opcode & 0x0fff;
+    uint8_t flag; //flag variable needed to store the value of V[F] for two subtract instruction
 
     switch (instruction) {
         case 0x0:
@@ -125,7 +126,7 @@ void chip8_execute(struct chip8 *chip8){
                     chip8->v[0xF] = sum > 0xFF;
                     break;
                 case 0x5: //SUB Vx, Vy
-                    uint8_t flag = chip8->v[x] >= chip8->v[y];
+                    flag = chip8->v[x] >= chip8->v[y];
                     chip8->v[x] = chip8->v[x] - chip8->v[y];
                     chip8->v[0xF] = flag;
                     break;
@@ -135,8 +136,9 @@ void chip8_execute(struct chip8 *chip8){
                     chip8->v[x] = chip8->v[x] >> 1;
                     break;
                 case 0x7: //SUBN Vx, Vy
-                    chip8->v[0xF] = chip8->v[y] > chip8->v[x];
+                    flag = chip8->v[y] >= chip8->v[x];
                     chip8->v[x] = chip8->v[y] - chip8->v[x];
+                    chip8->v[0xF] = flag;
                     break;
                 case 0xE: //SHL Vx {, Vy}
                     //TODO same as 8xy6
