@@ -1,5 +1,6 @@
 #include "chip8.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 #define FONTSET_SIZE 80
 
@@ -68,45 +69,135 @@ void chip8_execute(struct chip8 *chip8){
     switch (instruction) {
         case 0x0:
             switch(nn) {
-                case 0xe0:
+                case 0xe0: //CLS
                     memset(chip8->display, 0, sizeof(chip8->display));
                     chip8->state = CLEAR;
+                    break;
+                case 0xee: //RET
+                    --chip8->sp;
+                    chip8->pc = chip8->stack[chip8->sp];
+                    break;
             }
             break;
-        case 0x1:
+        case 0x1: //JP addr nnn
             chip8->pc = nnn;
             break;
-        case 0x2:
+        case 0x2: //CALL addr nnn
+            chip8->stack[chip8->sp] = chip8->pc;
+            ++chip8->sp;
+            chip8->pc = nnn;
             break;
-        case 0x3:
+        case 0x3: //SE Vx, nn
+            if(chip8->v[x] == nn)
+                chip8->pc += 2;
             break;
-        case 0x4:
+        case 0x4: //SNE Vx, nn
+            if(chip8->v[x] != nn)
+                chip8->pc += 2;
             break;
-        case 0x5:
+        case 0x5: //SE Vx, Vy
+            if(chip8->v[x] == chip8->v[y])
+                chip8->pc += 2;
             break;
-        case 0x6:
+        case 0x6: //LD Vx, nn
             chip8->v[x] = nn;
             break;
-        case 0x7:
+        case 0x7: //ADD Vx, nn
             chip8->v[x] += nn;
             break;
         case 0x8:
+            switch(n) {
+                case 0x0: //LD Vx, Vy
+                    chip8->v[x] = chip8->v[y];
+                    break;
+                case 0x1: //OR Vx, Vy
+                    chip8->v[x] = chip8->v[x] | chip8->v[y];
+                    break;
+                case 0x2: //AND Vx, Vy
+                    chip8->v[x] = chip8->v[x] & chip8->v[y];
+                    break;
+                case 0x3: //XOR Vx, Vy
+                    chip8->v[x] = chip8->v[x] ^ chip8->v[y];
+                    break;
+                case 0x4: //ADD Vx, Vy
+                    uint16_t sum = chip8->v[x] + chip8->v[y];
+                    chip8->v[0xF] = sum > 0xFF;
+                    chip8->v[x] = sum & 0xFF;
+                    break;
+                case 0x5: //SUB Vx, Vy
+                    chip8->v[0xF] = chip8->v[x] > chip8->v[y];
+                    chip8->v[x] = chip8->v[x] - chip8->v[y];
+                    break;
+                case 0x6: //SHR Vx {, Vy}
+                    //TODO handle both original and 90s-> implementations?
+                    chip8->v[0xF] = chip8->v[x] & 0x1;
+                    chip8->v[x] = chip8->v[x] >> 1;
+                    break;
+                case 0x7: //SUBN Vx, Vy
+                    chip8->v[0xF] = chip8->v[y] > chip8->v[x];
+                    chip8->v[x] = chip8->v[y] - chip8->v[x];
+                    break;
+                case 0xE: //SHL Vx {, Vy}
+                    //TODO same as 8xy6
+                    chip8->v[0xF] = chip8->v[x] & 0x80;
+                    chip8->v[x] = chip8->v[x] << 1;
+                    break;
+            }
             break;
-        case 0x9:
+        case 0x9: //SNE Vx, Vy
+            if(chip8->v[x] != chip8->v[y])
+                chip8->pc += 2;
             break;
-        case 0xA:
+        case 0xA: //LD I, addr nnn
             chip8->i = nnn;
             break;
-        case 0xB:
+        case 0xB: //JP V0, addr nnn
+            chip8->pc = chip8->v[0x0] + nnn;
             break;
-        case 0xC:
+        case 0xC: //RND Vx, nn
+            uint8_t random = rand() % 256;
+            chip8->v[x] = random & nn;
             break;
         case 0xD:
             chip8_diplay_framebuffer(chip8, chip8->v[x] % 64, chip8->v[y] % 32, n);
             break;
-        case 0xE:
+        case 0xE: //keypress codes
             break;
         case 0xF:
+            switch(nn){
+                //0x07 to 0x18 keypress or timer codes
+                case 0x07:
+                    break;
+                case 0x0A:
+                    break;
+                case 0x15:
+                    break;
+                case 0x18:
+                    break;
+                case 0x1E: //ADD I, Vx
+                    chip8->i = chip8->i + chip8->v[x]; 
+                    break;
+                case 0x29: //LD F, Vx
+                    //fontset start at address 0x050
+                    chip8->i = 0x050 + chip8->v[x] * 5;
+                    break;
+                case 0x33: //LD B, Vx
+                    //we are working with integers so division and modulo give correct results
+                    chip8->memory[chip8->i] = chip8->v[x] / 100;
+                    chip8->memory[chip8->i + 1] = (chip8->v[x] / 10) % 10;
+                    chip8->memory[chip8->i + 2] = chip8->v[x] % 10;
+                    break;
+                case 0x55: //LD I, Vx
+                    for(uint8_t i = 0; i <= x; ++i){
+                        chip8->memory[chip8->i + i] = chip8->v[i];
+                    }
+                    break;
+                case 0x65: //LD Vx, I
+                    for(uint8_t i = 0; i <= x; ++i){
+                        chip8->v[i] = chip8->memory[chip8->i + i];
+                    }
+                    break;
+            }
             break;
     }
 }
