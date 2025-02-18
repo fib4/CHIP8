@@ -11,7 +11,7 @@ BUILD_DIR = build
 SRC_DIR = src
 BIN = main
 
-SRCS = $(SRC_DIR)/main.c $(SRC_DIR)/chip8.c $(SRC_DIR)/graphics.c
+SRCS = $(SRC_DIR)/main.c $(SRC_DIR)/chip8.c $(SRC_DIR)/graphics.c $(SRC_DIR)/input.c
 OBJS = $(SRCS:$(SRC_DIR)/.c=$(BUILD_DIR)/.o)
 
 all: $(BIN)
