@@ -5,7 +5,7 @@ CFLAGS = -Wall -Wextra -g  # Warnings for debugging purposes
 
 # SDL2 flags
 SDL2_CFLAGS = $(shell sdl2-config --cflags) # Include paths for SDL2
-SDL2_LDFLAGS = $(shell sdl2-config --libs) # Linker flags for SDL2
+SDL2_LDFLAGS = $(shell sdl2-config --libs | sed -E s/-mwindows//) # Linker flags for SDL2
 
 BUILD_DIR = build
 SRC_DIR = src
