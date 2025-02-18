@@ -20,7 +20,7 @@ struct chip8 {
     uint16_t i; //16-bit index register
     uint16_t stack[16]; //stack can store 16 pc addresses
     uint8_t sp; //stack pointer
-
+    bool input[16]; //16 keys as array of on/off
     enum state state;
 };
 
